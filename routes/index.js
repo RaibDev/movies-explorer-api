@@ -15,7 +15,7 @@ router.post('/signin', celebrate(loginValidation), login);
 router.use('/users', auth, userRouter); // Защищаем роутеры авторизацией
 router.use('/movies', auth, movieRouter);
 
-router.use('*', (req, res, next) => { // Выводим ошибку при запросе несуществующего роутера
+router.use('*', auth, (req, res, next) => { // Выводим ошибку при запросе несуществующего роутера
   next(new NotFound('Запрошен неверный роут'));
 });
 

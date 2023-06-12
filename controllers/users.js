@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const { customErrors } = require('../errors/index');
-const { SECRET_KEY } = require('../utils/config');
+
+const { JWT_SECRET, NODE_ENV } = process.env;
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -17,9 +18,11 @@ const login = (req, res, next) => {
         if (!matched) {
           return next(new customErrors.Unauthorized('Неверный логин или пароль'));
         }
-        const token = jwt.sign({ _id: user._id }, SECRET_KEY, {
-          expiresIn: '7d',
-        });
+        const token = jwt.sign(
+          { _id: user._id },
+          NODE_ENV === 'production' ? JWT_SECRET : 'secret-key',
+          { expiresIn: '7d' },
+        );
         return res.send({ token });
       });
     })
@@ -60,7 +63,7 @@ const getUserInfo = (req, res, next) => {
       if (!user) {
         next(new customErrors.NotFound('Пользователь с таким id не найден'));
       }
-      res.send({ user });
+      return res.send({ user });
     })
     .catch(next);
 };

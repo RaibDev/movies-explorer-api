@@ -1,20 +1,26 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose'); // Менеджер БД
 const { errors } = require('celebrate'); // Обработчик ошибок валидации
+const helmet = require('helmet');
 
 const { errorLogger, requestLogger } = require('./middlewares/logger');
+const limiter = require('./utils/limiter');
 const router = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
 
-const { PORT = 3000 } = process.env;
+const { PORT, MONGO_DB } = require('./utils/config');
 
 const app = express(); // Запускаем сервер
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', { // Подключаем Монгу
+mongoose.connect(MONGO_DB);
 
-});
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(helmet()); // Защищаем заголовки
 
 app.use(requestLogger); // Логируем запросы
+
+app.use(limiter); // Ограничиваем кол-во запросов
 app.use(router); // Юзаем роуты
 
 app.use(errorLogger); // Логируем ошибки

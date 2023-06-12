@@ -32,7 +32,12 @@ const deleteFilm = (req, res, next) => {
       next(new customErrors.Conflict());
       return;
     }
-    Movie.deleteOne(card).then((responce) => responce.status(200).send({ message: 'Карточка удалена' }));
+    Movie.deleteOne(card).then((responce) => {
+      if (responce.deletedCount === 0) {
+        throw new customErrors.NotFound('Фильм с указанным id не найден');
+      }
+      return responce.status(200).send({ message: 'Карточка удалена' });
+    });
   })
     .catch(next);
 };
