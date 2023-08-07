@@ -8,6 +8,7 @@ const { errorLogger, requestLogger } = require('./middlewares/logger');
 const limiter = require('./utils/limiter');
 const router = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
+const cors = require('./middlewares/cors');
 
 const { PORT, MONGO_DB } = require('./utils/config');
 
@@ -19,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet()); // Защищаем заголовки
 
 app.use(requestLogger); // Логируем запросы
+app.use(cors);
 
 app.use(limiter); // Ограничиваем кол-во запросов
 app.use(router); // Юзаем роуты
