@@ -1,11 +1,10 @@
-const usersRouter = require('express').Router();
+const userRouter = require('express').Router();
 const { celebrate } = require('celebrate');
 
-const { updateProfileValidation } = require('../utils/validation');
+const { getUserInfo, patchUserInfo } = require('../controllers/users');
+const { patchUserInfoValidation } = require('../middlewares/validation');
 
-const { updateProfile, getMe } = require('../controllers/users');
+userRouter.get('/me', getUserInfo);
+userRouter.patch('/me', celebrate(patchUserInfoValidation), patchUserInfo);
 
-usersRouter.get('/me', getMe);
-usersRouter.patch('/me', celebrate(updateProfileValidation), updateProfile);
-
-module.exports = usersRouter;
+module.exports = userRouter;
