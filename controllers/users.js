@@ -57,7 +57,7 @@ const createUser = (req, res, next) => {
     .catch(next);
 };
 
-// const getUserInfo = (req, res, next) => {
+// const getUserInfo = (req, res, next) => { ----
 //   User.findById(req.user._id)
 //     .then((user) => res.status(200).send(user))
 //     .catch((error) => {
@@ -71,8 +71,45 @@ const createUser = (req, res, next) => {
 //         next(error);
 //       }
 //     });
+// }; -----
+
+// const getUserInfo = (req, res, next) => {
+//   User.findById(req.user._id)
+//     .then((user) => {
+//       if (!user) {
+//         next(new customErrors.NotFound('Пользователь не найден'));
+//         return;
+//       }
+//       res.send(user);
+//     })
+//     .catch(next);
 // };
 
+// const patchUserInfo = (req, res, next) => {
+//   const { name, email } = req.body;
+//   User.findByIdAndUpdate(
+//     req.user._id,
+//     { name, email },
+//     {
+//       new: true, // Возвращаем уже измененный объект
+//       runValidators: true, // Валидируем поля перед записью в БД
+//     },
+//   )
+//     .then((user) => {
+//       if (!user) {
+//         next(new customErrors.NotFound('Пользователь с таким id не найден'));
+//         return;
+//       }
+//       res.send(user);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'ValidationError') {
+//         next(new customErrors.BadRequest('Переданы некорректные данные'));
+//         return;
+//       }
+//       next(err);
+//     });
+// };
 const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -85,15 +122,13 @@ const getUserInfo = (req, res, next) => {
     .catch(next);
 };
 
+// изменение данных пользователя
 const patchUserInfo = (req, res, next) => {
   const { name, email } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
     { name, email },
-    {
-      new: true, // Возвращаем уже измененный объект
-      runValidators: true, // Валидируем поля перед записью в БД
-    },
+    { new: true, runValidators: true },
   )
     .then((user) => {
       if (!user) {
@@ -103,7 +138,10 @@ const patchUserInfo = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.code === 11000) {
+        next(new customErrors.Conflict('Пользователь с такими данными уже зарегистрирован'));
+        return;
+      } if (err.name === 'ValidationError') {
         next(new customErrors.BadRequest('Переданы некорректные данные'));
         return;
       }
