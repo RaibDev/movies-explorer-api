@@ -2,7 +2,7 @@ const Movie = require('../models/movie');
 const { customErrors } = require('../errors/index');
 
 const getSavedFilms = (req, res, next) => {
-  Movie.find({ owner: req.user._id }).then((cards) => res.status(200).send(cards))
+  Movie.find({ owner: req.user._id }).then((cards) => res.status(200).send(cards.reverse()))
     .catch(next);
 };
 
