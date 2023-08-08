@@ -58,8 +58,7 @@ const createUser = (req, res, next) => {
 };
 
 const getUserInfo = (req, res, next) => {
-  const { _id } = req.user;
-  User.findById({ _id })
+  User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         next(new customErrors.NotFound('Пользователь с таким id не найден'));
