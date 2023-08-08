@@ -7,7 +7,34 @@ const getSavedFilms = (req, res, next) => {
 };
 
 const createFilm = (req, res, next) => {
-  Movie.create({ ...req.body, owner: req.user._id })
+  const {
+    nameRU,
+    nameEN,
+    trailerLink,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    thumbnail,
+    movieId,
+  } = req.body;
+  const owner = req.user._id;
+  return Movie.create({
+    nameRU,
+    nameEN,
+    trailerLink,
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    thumbnail,
+    movieId,
+    owner,
+  })
     .then((newFilm) => res.status(201).send(newFilm))
     .catch((err) => {
       if (err.name === 'ValidationError') {
