@@ -44,6 +44,7 @@ const createUser = (req, res, next) => {
           });
         })
         .catch((err) => {
+          console.log(err);
           if (err.code === 11000) {
             return next(new customErrors.Conflict('Пользователь с таким email уже зарегистрирован'));
           }
