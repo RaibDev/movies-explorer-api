@@ -63,7 +63,7 @@ const getUserInfo = (req, res, next) => {
       if (!user) {
         next(new customErrors.NotFound('Пользователь с таким id не найден'));
       }
-      return res.send({ user });
+      return res.send(user);
     })
     .catch(next);
 };
@@ -83,7 +83,7 @@ const patchUserInfo = (req, res, next) => {
         next(new customErrors.NotFound('Пользователь с таким id не найден'));
         return;
       }
-      res.send({ user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

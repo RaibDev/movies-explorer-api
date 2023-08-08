@@ -2,13 +2,13 @@ const Movie = require('../models/movie');
 const { customErrors } = require('../errors/index');
 
 const getSavedFilms = (req, res, next) => {
-  Movie.find({ owner: req.user._id }).then((cards) => res.status(200).send({ cards }))
+  Movie.find({ owner: req.user._id }).then((cards) => res.status(200).send(cards))
     .catch(next);
 };
 
 const createFilm = (req, res, next) => {
   Movie.create({ ...req.body, owner: req.user._id })
-    .then((newFilm) => res.status(201).send({ newFilm }))
+    .then((newFilm) => res.status(201).send(newFilm))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new customErrors.BadRequest('Переданы некорректные данные'));
