@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    default: '',
+    select: false,
   },
   name: {
     type: String,
@@ -18,5 +18,5 @@ const userSchema = new mongoose.Schema({
     maxlength: 30,
     default: 'Акакий',
   },
-});
+}, { versionKey: false });
 module.exports = mongoose.model('user', userSchema);
