@@ -1,3 +1,4 @@
-const regexUrl = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,}\.[a-zA-Z0-9()]{1,32}\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)/;
-
-module.exports = regexUrl;
+const urlRegEx = /^((ftp|http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-/])*)?/;
+module.exports = {
+  urlRegEx,
+};

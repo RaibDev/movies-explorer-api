@@ -1,35 +1,39 @@
-require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose'); // Менеджер БД
-const { errors } = require('celebrate'); // Обработчик ошибок валидации
 const helmet = require('helmet');
-const cors = require('cors');
-
-const { errorLogger, requestLogger } = require('./middlewares/logger');
+const { errors } = require('celebrate');
+const cors = require('./middlewares/cors');
 const limiter = require('./utils/limiter');
-const router = require('./routes/index');
-const errorHandler = require('./middlewares/errorHandler');
+const centralizedErrorController = require('./middlewares/centralizedErrorController');
 
-const { PORT, MONGO_DB } = require('./utils/config');
+const router = require('./routes');
+const connectDB = require('./db');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { NotFound } = require('./errors');
 
-const app = express(); // Запускаем сервер
-mongoose.connect(MONGO_DB);
+const { PORT = 3000 } = process.env;
+const app = express();
+
+connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet()); // Защищаем заголовки
+app.use(helmet());
 
-app.use(requestLogger); // Логируем запросы
-app.use(cors());
+app.use(requestLogger);
+app.use(cors);
 
-app.use(limiter); // Ограничиваем кол-во запросов
-app.use(router); // Юзаем роуты
+app.use(limiter);
+app.use(router);
 
-app.use(errorLogger); // Логируем ошибки
+app.use((req, res, next) => {
+  next(new NotFound('Запрошен несуществующий роут'));
+});
 
-app.use(errors()); // Направляем ошибки в универсальный обработчик ошибок
-app.use(errorHandler); // Универсальный обработчик ошибок
+app.use(errorLogger);
+app.use(errors());
 
-app.listen(PORT, () => { // Слушаем сервер на порту
-  console.log(`App listening ${PORT} Port`);
+app.use(centralizedErrorController);
+
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
