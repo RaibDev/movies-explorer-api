@@ -59,13 +59,18 @@ const createUser = (req, res, next) => {
 
 const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
-    .then((user) => {
-      if (!user) {
-        next(new customErrors.NotFound('Пользователь с таким id не найден'));
+    .then((user) => res.send(user))
+    .catch((error) => {
+      if (error.name === 'ValidationError') {
+        next(
+          new customErrors.BadRequest(
+            'Некорректные данные при создании нового пользователя',
+          ),
+        );
+      } else {
+        next(error);
       }
-      return res.send(user);
-    })
-    .catch(next);
+    });
 };
 
 const patchUserInfo = (req, res, next) => {
