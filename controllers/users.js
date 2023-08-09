@@ -125,8 +125,8 @@ const getUserInfo = (req, res, next) => {
 // изменение данных пользователя
 const patchUserInfo = (req, res, next) => {
   const { name, email } = req.body;
-  console.log(req.body.name);
-  console.log(req.body.email);
+  console.log('name ---> ', req.body.name);
+  console.log('email ---> ', req.body.email);
 
   User.findByIdAndUpdate(
     req.user._id,
@@ -134,7 +134,7 @@ const patchUserInfo = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .then((user) => {
-      console.log(user);
+      console.log('user ---> ', user);
       if (!user) {
         next(new customErrors.NotFound('Пользователь с таким id не найден'));
         return;
