@@ -35,8 +35,12 @@ const createFilm = (req, res, next) => {
     movieId,
     owner,
   })
-    .then((newFilm) => res.status(201).send(newFilm))
+    .then((newFilm) => {
+      console.log(newFilm);
+      res.status(201).send(newFilm);
+    })
     .catch((err) => {
+      console.log(err);
       if (err.name === 'ValidationError') {
         next(new customErrors.BadRequest('Переданы некорректные данные'));
         return;
@@ -45,11 +49,24 @@ const createFilm = (req, res, next) => {
     });
 };
 
-const deleteFilm = (req, res, next) => {
-  const { cardid } = req.params;
-  const { userId } = req.user._id;
+// const deleteFilm = (req, res, next) => {
+//   Movie.deleteOne({ _id: req.params._id })
+//     .then((movie) => {
+//       if (movie.deletedCount === 0) {
+//         throw new customErrors.NotFound('Фильм с указанным_id не найден.');
+//       }
+//       return res.send({ message: 'Фильм удален' });
+//     })
+//     .catch(next);
+// };
 
-  Movie.findOne(cardid).then((card) => {
+const deleteFilm = (req, res, next) => {
+  // const { cardid } = req.params;
+  const { userId } = req.user._id;
+  console.log(req.params);
+  console.log(req.params._id);
+
+  Movie.findOne({ _id: req.params._id }).then((card) => {
     const owner = card.owner.toString();
     if (!card) {
       next(new customErrors.NotFound('Фильм с данным id не найден'));

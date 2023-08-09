@@ -31,12 +31,12 @@ const createFilmValidation = {
     country: Joi.string().required().messages({
       'any.required': 'Поле country должно быть заполнено',
     }),
-    direction: Joi.string().required().messages({
-      'any.required': 'Поле direction должно быть заполнено',
-    }),
     duration: Joi.number().required().messages({
       'any.required': 'Поле duration должно быть заполнено',
     }),
+    director: Joi.string().messages({
+      'any.required': 'Поле не должно быть пустым',
+    }).required(),
     year: Joi.string().required().messages({
       'any.required': 'Поле year должно быть заполнено',
     }),
@@ -52,13 +52,13 @@ const createFilmValidation = {
     thumbnail: Joi.string().required().pattern(regexUrl).messages({
       'string.dataUri': 'Передана некорректная ссылка на превью',
     }),
-    movied: Joi.number().required().messages({
+    movieId: Joi.number().required().messages({
       'any.required': 'Поле movied должно быть заполнено',
     }),
-    nameRu: Joi.string().required().messages({
+    nameRU: Joi.string().required().messages({
       'any.required': 'Поле nameRu должно быть заполнено',
     }),
-    nameEn: Joi.string().required().messages({
+    nameEN: Joi.string().required().messages({
       'any.required': 'Поле nameEn должно быть заполнено',
     }),
   }),
