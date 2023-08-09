@@ -125,12 +125,16 @@ const getUserInfo = (req, res, next) => {
 // изменение данных пользователя
 const patchUserInfo = (req, res, next) => {
   const { name, email } = req.body;
+  console.log(req.body.name);
+  console.log(req.body.email);
+
   User.findByIdAndUpdate(
     req.user._id,
     { name, email },
     { new: true, runValidators: true },
   )
     .then((user) => {
+      console.log(user);
       if (!user) {
         next(new customErrors.NotFound('Пользователь с таким id не найден'));
         return;
@@ -138,6 +142,7 @@ const patchUserInfo = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
+      console.log(err);
       if (err.code === 11000) {
         next(new customErrors.Conflict('Пользователь с такими данными уже зарегистрирован'));
         return;

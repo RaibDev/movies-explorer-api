@@ -67,6 +67,7 @@ const deleteFilm = (req, res, next) => {
   console.log(req.params._id);
 
   Movie.findOne({ _id: req.params._id }).then((card) => {
+    console.log(card);
     const owner = card.owner.toString();
     if (!card) {
       next(new customErrors.NotFound('Фильм с данным id не найден'));
@@ -77,6 +78,7 @@ const deleteFilm = (req, res, next) => {
       return;
     }
     Movie.deleteOne(card).then((responce) => {
+      console.log(responce);
       if (responce.deletedCount === 0) {
         throw new customErrors.NotFound('Фильм с указанным id не найден');
       }
