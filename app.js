@@ -3,7 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose'); // Менеджер БД
 const { errors } = require('celebrate'); // Обработчик ошибок валидации
 const helmet = require('helmet');
-const cors = require('cors');
+const cors = require('./middlewares/cors');
+// const cors = require('cors');
 
 const { errorLogger, requestLogger } = require('./middlewares/logger');
 const limiter = require('./utils/limiter');
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet()); // Защищаем заголовки
 
 app.use(requestLogger); // Логируем запросы
-app.options('*', cors());
+app.use(cors);
 
 app.use(limiter); // Ограничиваем кол-во запросов
 app.use(router); // Юзаем роуты
