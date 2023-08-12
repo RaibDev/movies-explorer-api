@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet()); // Защищаем заголовки
 
 app.use(requestLogger); // Логируем запросы
-app.use(cors());
+app.options('*', cors());
 
 app.use(limiter); // Ограничиваем кол-во запросов
 app.use(router); // Юзаем роуты
