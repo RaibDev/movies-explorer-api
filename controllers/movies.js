@@ -82,7 +82,7 @@ const deleteFilm = (req, res, next) => {
           if (responce.deletedCount === 0) {
             next(new customErrors.NotFound('Фильм с указанным id не найден'));
           }
-          responce.status(200).send({ message: 'Карточка удалена' });
+          res.status(200).send({ message: 'Карточка удалена' });
         })
         .catch((err) => {
           console.log(err);
