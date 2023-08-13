@@ -67,15 +67,15 @@ const deleteFilm = (req, res, next) => {
   Movie.findById(req.params._id)
     .then((card) => {
       console.log(card);
-      // const owner = card.owner.toString();
-      if (!card) {
-        next(new customErrors.NotFound('Фильм с данным id не найден'));
-        return;
-      }
-      // if (req.user._id !== owner) {
-      //   next(new customErrors.Conflict('У вас недостаточно прав для удаления'));
+      const owner = card.owner.toString();
+      // if (!card) {
+      //   next(new customErrors.NotFound('Фильм с данным id не найден'));
       //   return;
       // }
+      if (req.user._id !== owner) {
+        next(new customErrors.Conflict('У вас недостаточно прав для удаления'));
+        return;
+      }
       Movie.findByIdAndDelete(req.params._id)
         .then((responce) => {
           console.log(responce);
@@ -84,9 +84,15 @@ const deleteFilm = (req, res, next) => {
           }
           responce.status(200).send({ message: 'Карточка удалена' });
         })
-        .catch(next);
+        .catch((err) => {
+          console.log(err);
+          next(err);
+        });
     })
-    .catch(next);
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
 };
 
 // const deleteFilm = (req, res, next) => {
