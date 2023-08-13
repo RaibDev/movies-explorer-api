@@ -60,53 +60,54 @@ const createFilm = (req, res, next) => {
 //     .catch(next);
 // };
 
-// const deleteFilm = (req, res, next) => {
-//   // const { cardid } = req.params;
-//   const { userId } = req.user._id;
+const deleteFilm = (req, res, next) => {
+  // const { cardid } = req.params;
+  const { userId } = req.user._id;
 
+  Movie.findById({ _id: req.params._id })
+    .then((card) => {
+      console.log(card);
+      const owner = card.owner.toString();
+      if (!card) {
+        next(new customErrors.NotFound('Фильм с данным id не найден'));
+        return;
+      }
+      if (userId !== owner) {
+        next(new customErrors.Conflict('У вас недостаточно прав для удаления'));
+        return;
+      }
+      Movie.findByIdAndRemove({ _id: req.params._id }).then((responce) => {
+        console.log(responce);
+        if (responce.deletedCount === 0) {
+          throw new customErrors.NotFound('Фильм с указанным id не найден');
+        }
+        return responce.status(200).send({ message: 'Карточка удалена' });
+      });
+    })
+    .catch(next);
+};
+
+// const deleteFilm = (req, res, next) => {
 //   Movie.findById(req.params._id)
+//     .orFail(() => {
+//       throw new customErrors.NotFound('Фильм с данным id не найден');
+//     })
 //     .then((card) => {
 //       console.log(card);
-//       const owner = card.owner.toString();
-//       if (!card) {
-//         next(new customErrors.NotFound('Фильм с данным id не найден'));
-//         return;
+//       if (card.owner !== req.user._id) {
+//         throw new customErrors.Forbidden('У вас недостаточно прав для удаления');
 //       }
-//       if (userId !== owner) {
-//         next(new customErrors.Conflict());
-//         return;
-//       }
-//       Movie.deleteOne(card).then((responce) => {
-//         console.log(responce);
-//         if (responce.deletedCount === 0) {
-//           throw new customErrors.NotFound('Фильм с указанным id не найден');
-//         }
-//         return responce.status(200).send({ message: 'Карточка удалена' });
-//       });
+//       Movie.findByIdAndRemove(req.params._id)
+//         .orFail(() => {
+//           throw new customErrors.NotFound('Фильм с данным id не найден');
+//         })
+//         .then(() => {
+//           res.send({ message: 'Карточка удалена' });
+//         })
+//         .catch((err) => next(err));
 //     })
-//     .catch(next);
+//     .catch((err) => next(err));
 // };
-
-const deleteFilm = (req, res, next) => {
-  Movie.findById(req.params._id)
-    .orFail(() => {
-      throw new customErrors.NotFound('Фильм с данным id не найден');
-    })
-    .then((card) => {
-      if (card.owner !== req.user._id) {
-        throw new customErrors.Forbidden('У вас недостаточно прав для удаления');
-      }
-      Movie.findByIdAndRemove(req.params._id)
-        .orFail(() => {
-          throw new customErrors.NotFound('Фильм с данным id не найден');
-        })
-        .then(() => {
-          res.send({ message: 'Карточка удалена' });
-        })
-        .catch((err) => next(err));
-    })
-    .catch((err) => next(err));
-};
 
 module.exports = {
   createFilm,
