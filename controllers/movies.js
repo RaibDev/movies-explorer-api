@@ -79,9 +79,9 @@ const deleteFilm = (req, res, next) => {
       Movie.findByIdAndDelete(req.params._id)
         .then((responce) => {
           console.log(responce);
-          if (responce.deletedCount === 0) {
-            throw new customErrors.NotFound('Фильм с указанным id не найден');
-          }
+          // if (responce.deletedCount === 0) {
+          //   throw new customErrors.NotFound('Фильм с указанным id не найден');
+          // }
           responce.status(200).send({ message: 'Карточка удалена' });
         })
         .catch((err) => next(err));
