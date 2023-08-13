@@ -64,9 +64,9 @@ const deleteFilm = (req, res, next) => {
   // const { cardid } = req.params;
   const { userId } = req.user._id;
   console.log(req.params);
-  console.log(req.params._id);
+  console.log(req.params.movieId);
 
-  Movie.findOne({ _id: req.params._id }).then((card) => {
+  Movie.findOne(req.params.movieId).then((card) => {
     console.log(card);
     const owner = card.owner.toString();
     if (!card) {

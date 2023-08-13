@@ -19,7 +19,7 @@ const patchUserInfoValidation = {
 
 const deleteFilmValidation = {
   params: Joi.object().keys({
-    _id: Joi.string().hex().length(24).required()
+    movieId: Joi.string().hex().length(24)
       .messages({
         'string.hex': 'Передан некорректный id фильма',
       }),
